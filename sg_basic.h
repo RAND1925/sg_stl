@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by dell on 2019/9/18.
 //
 
@@ -10,30 +10,38 @@
 namespace sg {
 	using size_type = size_t;
 	using difference_type = ptrdiff_t;
-	struct sg_input_iterator_tag{};
-	struct sg_output_iterator_tag{};
-	struct sg_forward_iterator_tag:
-			public sg_input_iterator_tag{};
-	struct sg_bidirectional_iterator_tag:
-			public sg_forward_iterator_tag{};
-	struct sg_random_access_iterator_tag:
-			public sg_bidirectional_iterator_tag{};
+	struct sg_input_iterator_tag {
+	};
+	struct sg_output_iterator_tag {
+	};
+	struct sg_forward_iterator_tag :
+			public sg_input_iterator_tag {
+	};
+	struct sg_bidirectional_iterator_tag :
+			public sg_forward_iterator_tag {
+	};
+	struct sg_random_access_iterator_tag :
+			public sg_bidirectional_iterator_tag {
+	};
+	
 	template <typename T>
 	class sg__container_base {
-
+	
 	};
-class sg_out_of_memory_exception: public std::exception{
-	sg_out_of_memory_exception(size_t address, const std::string & msg):m_address(address), m_msg(msg){}
 
+
+class sg_out_of_memory_exception: public std::exception{
+
+private:
+//	std::string m_msg;
+//	size_t m_address;
 public:
+//	sg_out_of_memory_exception(size_t address, const std::string & msg):m_address(address), m_msg(msg){}
 	virtual const char* what () const noexcept override {
 		return "OUT OF MEMORY";
 	}
+	
 
-
-private:
-		std::string m_msg;
-		size_t m_address;
 	};
 	template< class T >
 	struct is_numeral
@@ -47,5 +55,6 @@ private:
 					)> {};
 	
 }
+
 
 #endif //SG_STL_SG_BASIC_H

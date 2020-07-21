@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by dell on 2019/9/18.
 //
 
@@ -23,7 +23,9 @@ namespace sg {
 
 	template <typename T>
 	static void sg_deallocate(T* p, size_type n = 1) {
-		::operator delete(p);
+		if (n != 0) {
+			::operator delete(p);
+		}
 	}
 
 	template <typename T, typename ...Args>
@@ -47,18 +49,39 @@ namespace sg {
 		for (; begin != end; ++begin, ++result) {
 			sg_construct(sg_addressof(*result), *begin);
 		}
+		return result;
 	}
 	template <typename InputIter, typename ForwardIter>
 	ForwardIter sg_uninitialized_copy_n(InputIter begin, size_t n, ForwardIter result) {
 		for (; n > 0; --n, ++begin, ++result) {
 			sg_construct(sg_addressof(*result), *begin);
 		}
+		return result;
 	}
+	
+	template <typename InputIter, typename ForwardIter>
+	ForwardIter sg_uninitialized_move(InputIter begin, InputIter end, ForwardIter result) {
+		for (; begin != end; ++begin, ++result) {
+			sg_construct(sg_addressof(*result), std::move(*begin));
+		}
+		return result;
+	}
+	
+	
+	template <typename InputIter, typename ForwardIter>
+	ForwardIter sg_uninitialized_move_n(InputIter begin, size_t n, ForwardIter result) {
+		for (; n > 0; --n, ++begin) {
+			sg_construct(sg_addressof(*result), std::move(*begin));
+		}
+		return result;
+	}
+	
 	template <typename ForwardIter, typename T>
 	ForwardIter sg_uninitialized_fill(ForwardIter begin, ForwardIter end, const T& value) {
 		for (; begin != end; ++begin) {
 			sg_construct(sg_addressof(*begin), value);
 		}
+		return begin;
 	}
 	
 	template <typename ForwardIter, typename T>
@@ -66,45 +89,18 @@ namespace sg {
 		for (; n > 0; --n, ++begin) {
 			sg_construct(sg_addressof(*begin), value);
 		}
+		return begin;
 	}
+	
+	
+	
 	template <typename ForwardIter>
 	ForwardIter sg_destroy(ForwardIter begin, ForwardIter end) {
 		for (; begin != end; ++begin) {
 			sg_destroy(sg_addressof(*begin));
 		}
+		return begin;
 	}
-
-
-template<typename T>
-	class sg_allocator {
-	public:
-		using value_type = T;
-		using pointer = T *;
-		using const_pointer = const T *;
-		using reference = T &;
-		using const_reference = const T &;
-
-		static pointer allocate(size_t n = 1) {
-			return static_cast<pointer>(::operator new((sizeof(T) * n)));
-		}
-		static void deallocate(pointer p, size_t n = 1) {
-			::operator delete(p);
-		}
-
-		template <typename ...Args>
-		static void construct (pointer p, Args&& ...args) {
-			::new (p) T(std::forward<Args>(args)...);
- 		}
-
- 		static void destroy (pointer p) {
-			p->~T();
-		}
-
-		
-		size_t max_size() const {
-			return size_t(UINT_MAX / sizeof(T));
-		}
-	};
 	
 	
 }

@@ -15,14 +15,18 @@ namespace sg {
 	template <typename T, typename Sequence = sg_list<T> >
 	class sg_queue {
 	public:
+
+		// 泛型相关代码
 		using value_type = typename Sequence::value_type;
 		using reference = typename Sequence::reference;
 		using const_reference = typename Sequence::const_reference;
 
 	protected:
-		Sequence c;
+		Sequence c; // 底层容器
 
 	public:
+
+		// 直接转发给底层容器
 		bool empty() const {
 			return c.empty();
 		}
@@ -35,7 +39,7 @@ namespace sg {
 			return c.front();
 		}
 
-		void push(T data) {
+		void push(const T& data) {
 			c.push_back(data);
 		}
 

@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by dell on 2019/11/16.
 //
 
@@ -12,24 +12,56 @@
 #include <sstream>
 #include <string>
 #include <typeinfo>
-
+#include <iterator>
 namespace sg {
 	
 	template <typename T>
 	bool no_op(const T& value) { return true; }
 	
-	class sg_ios : public std::iostream {
+	class sg_ios : public std::iostream, std::streambuf {
 	public:
+		sg_ios(): std::iostream(this) {}
+
+		template <typename ForwardIter, typename T>
+		bool getline(T hint, ForwardIter begin, size_t n) {
+		
+			std::string tmp;
+			do {
+				std::getline(std::cin, tmp);
+			} while (tmp.empty());
+			std::stringstream ss;
+			ss.str(tmp);
+			using SS_Iter = std::istream_iterator<T>;
+			SS_Iter ss_iter_begin(ss);
+			SS_Iter ss_iter_end;
+			size_t i = 0;
+			for (; i != n && ss_iter_begin != ss_iter_end; ++i, ++ss_iter_begin, ++begin) {
+				*begin = *ss_iter_begin;
+			}
+			if (i == n && ss_iter_begin == ss_iter_end) {
+				return true;
+			}
+			if (i == n && ss_iter_begin != ss_iter_end) {
+				std::cerr << "The number of your input is more than " << n << ", try again." << std::endl;
+				return false;
+			}
+			if (i != n && ss_iter_begin == ss_iter_end) {
+				std::cerr << "The number of your input is less than " << n << ", try again." << std::endl;
+				return false;
+			}
+			return true;
+		}
+		
 		template <typename T, typename Func>
 		sg_ios& session(const std::string& out, T& value,
 		                Func check, const std::string& wrong_hint = "") {
 			do {
-				*this << out;
+				*this << out << std::flush;
 				*this >> value;
 				if (check(value)) {
 					break;
 				}
-				*this << "[ERROR]: "<< wrong_hint << std::endl;
+				std::cerr << "[ERROR]: "<< wrong_hint << std::endl;
 			} while (true);
 			return *this;
 		}
@@ -42,7 +74,7 @@ namespace sg {
 		}
 
 		template <typename T>
-		sg_ios& operator<<(const T& value) {
+		sg_ios& operator << (const T& value) {
 			std::cout << value;
 			return *this;
 		}
@@ -129,7 +161,7 @@ namespace sg {
 	};
 	
 	static sg_ios sg_cios;
-
+}
 /*	template <typename ...Args>
 	std::string fomart(std::string&& s, Args...args) {
 		std::string s_{s};
@@ -194,5 +226,5 @@ namespace sg {
 
 	};
  */
-} // namespace s
+// namespace s
 #endif // SG_STL_SG_IOS_H
