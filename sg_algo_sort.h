@@ -1,9 +1,6 @@
-﻿//
-// Created by dell on 2019/10/9.
-//
-
-#ifndef SG_STL_SORTER_H
+﻿#ifndef SG_STL_SORTER_H
 #define SG_STL_SORTER_H
+
 #include <cassert>
 #include "sg_allocator.h"
 #include "sg_algo_base.h"
