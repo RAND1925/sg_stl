@@ -5,7 +5,7 @@
 #ifndef SG_STL_SG_SLIST_H
 #define SG_STL_SG_SLIST_H
 
-#include "sg_allocator.h"
+#include "__memory/sg_allocator.h"
 namespace sg {
 	template <typename T>
 	struct sg_slist_node {

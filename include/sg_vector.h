@@ -6,8 +6,8 @@
 #define SG_STL_SG_VECTOR_H
 
 #include "sg_basic.h"
-#include "sg_allocator.h"
-#include "sg_algo_base.h"
+#include "__memory/sg_allocator.h"
+#include "__algorithm/sg_algo_base.h"
 namespace sg {
 	
 	template<typename T>

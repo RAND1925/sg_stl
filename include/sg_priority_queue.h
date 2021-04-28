@@ -6,7 +6,7 @@
 #define SG_STL_SG_PRIORITY_QUEUE_H
 
 #include "sg_vector.h"
-#include "sg_algo_heap.h"
+#include "__algorithm/sg_algo_heap.h"
 namespace sg {
 	
 	template <typename T, typename Comp = std::less<T>, typename Container = sg::sg_vector<T> >

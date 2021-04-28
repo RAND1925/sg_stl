@@ -58,7 +58,7 @@ namespace sg {
         }
     };
 
-    template <typename T1, typename T2, bool same = !std::is_same<T1, T2>::value>
+    template <typename T1, typename T2>
     struct sg_compressed_pair: private sg_compressed_pair_element<T1, 0>, private sg_compressed_pair_element<T2, 1> {
     public:
         using Base1 = sg_compressed_pair_element<T1, 0>;
@@ -78,7 +78,7 @@ namespace sg {
         }
 
         [[nodiscard]] typename Base2::const_reference second() const noexcept {
-            return static_cast<const Base2&>(*this).get();
+            return Base2::get();
         }
 
         [[nodiscard]] typename Base2::reference second() noexcept {
@@ -86,8 +86,8 @@ namespace sg {
         }
 
         inline void swap(sg_compressed_pair& x) noexcept(std::is_nothrow_swappable_v<T1> && std::is_nothrow_swappable_v<T2>) {
-            swap(first(), x.first());
-            swap(second(), x.second());
+            std::swap(first(), x.first());
+            std::swap(second(), x.second());
         }
     };
 

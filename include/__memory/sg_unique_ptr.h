@@ -1,24 +1,16 @@
-#ifndef SG_STL_SG_SMART_POINTER_H
-#define SG_STL_SG_SMART_POINTER_H
+#ifndef SG_STL_SG_SMART_PTR_H
+#define SG_STL_SG_SMART_PTR_H
 
 #include <memory>
 
+#include "sg_default_delete.h"
 #include "sg_compressed_pair.h"
 
 // do not support array
 namespace sg {
-    template <typename T>
-    class sg_smart_ptr {
-    };
-    template <typename T>
-    struct sg_default_deleter {
-        void operator()(T* ptr) {
-            std::destroy_at(ptr);
-        }
-    };
 
-    template <typename T, typename Deleter = sg_default_deleter<T> >
-    class sg_unique_ptr: public sg_smart_ptr<T> {
+    template <typename T, typename Deleter = sg_default_delete<T> >
+    class sg_unique_ptr {
     public:
         using element_type = T;
         using deleter_type = Deleter;
@@ -28,14 +20,13 @@ namespace sg {
         constexpr sg_unique_ptr() noexcept {}
         constexpr sg_unique_ptr(std::nullptr_t null_ptr) noexcept {}
 
-        explicit sg_unique_ptr(pointer p) noexcept : ptr(p, sg_default_deleter<T>()) {}
-        inline sg_unique_ptr(sg_unique_ptr&& u) noexcept : ptr(u.release(), sg_default_deleter<T>(u.get_deleter())) {}
+        explicit sg_unique_ptr(pointer p) noexcept : ptr(p, sg_default_delete<T>()) {}
+        inline sg_unique_ptr(sg_unique_ptr&& u) noexcept : ptr(u.release(), sg_default_delete<T>(u.get_deleter())) {}
 
         template< class U, class E >
         sg_unique_ptr(sg_unique_ptr<U, E>&& u) noexcept
-        : ptr(u.release(), std::forward<deleter_type>(u.get_deleter())){
+                : ptr(u.release(), std::forward<deleter_type>(u.get_deleter())){
         }
-
 
         // destructor
         ~sg_unique_ptr() {
@@ -136,4 +127,4 @@ namespace sg {
     }
 
 }
-#endif //SG_STL_SG_SMART_POINTER_H
+#endif //SG_STL_SG_SMART_PTR_H

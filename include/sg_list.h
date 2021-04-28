@@ -6,7 +6,7 @@
 #define SG_STL_SG_LIST_H
 
 #include "sg_basic.h"
-#include "sg_allocator.h"
+#include "__memory/sg_allocator.h"
 namespace sg {
 	template <typename T>
 	struct sg_list_node {
